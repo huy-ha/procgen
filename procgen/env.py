@@ -197,7 +197,6 @@ class BaseProcgenEnv(CEnv):
     def act(self, ac):
         # tensorflow may return int64 actions (https://github.com/openai/gym/blob/master/gym/spaces/discrete.py#L13)
         # so always cast actions to int32
-        ac = np.random.uniform(-1.0,1.0,size=(1,2))
         return super().act({"action": ac.astype(np.float32)})
 
 
