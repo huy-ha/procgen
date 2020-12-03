@@ -49,7 +49,7 @@ class BasicAbstractGame : public Game {
     virtual void draw_grid_obj(QPainter &p, const QRectF &rect, int type, int theme);
     virtual void choose_world_dim();
     virtual bool should_draw_entity(const std::shared_ptr<Entity> &entity);
-    virtual void set_action_xy(int move_action);
+    virtual void set_action_xy(float move_action);
     virtual void choose_center(float &cx, float &cy);
     virtual void update_agent_velocity();
     virtual QRectF get_adjusted_image_rect(int type, const QRectF &rect);
@@ -120,7 +120,7 @@ class BasicAbstractGame : public Game {
 
     std::vector<float> asset_aspect_ratios;
     std::vector<int> asset_num_themes;
-    
+
     bool use_procgen_background = false;
     int background_index = 0;
     float bg_tile_ratio = 0.0f;

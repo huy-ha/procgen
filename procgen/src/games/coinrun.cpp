@@ -448,9 +448,9 @@ class CoinRun : public BasicAbstractGame {
         return is_wall(obj) || obj == out_of_bounds_object;
     }
 
-    void set_action_xy(int move_action) override {
+    void set_action_xy(float move_action) override {
         action_vx = move_action / 3 - 1;
-        action_vy = (move_action % 3) - 1;
+        action_vy = move_action;
 
         if (action_vx > 0)
             facing_right = true;

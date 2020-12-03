@@ -22,7 +22,8 @@ void bgr32_to_rgb888(void *dst_rgb888, void *src_bgr32, int w, int h) {
     }
 }
 
-Game::Game(std::string name) : game_name(name) {
+Game::Game(std::string name)
+    : game_name(name) {
     timeout = 1000;
     episodes_remaining = 0;
     last_reward = -1;
@@ -169,7 +170,7 @@ void Game::game_init() {
 
 void Game::serialize(WriteBuffer *b) {
     b->write_int(SERIALIZE_VERSION);
-    
+
     b->write_string(game_name);
 
     b->write_int(options.paint_vel_info);
@@ -199,7 +200,7 @@ void Game::serialize(WriteBuffer *b) {
     b->write_int(step_data.done);
     b->write_int(step_data.level_complete);
 
-    b->write_int(action);
+    b->write_float(action);
     b->write_int(timeout);
 
     b->write_int(current_level_seed);
@@ -209,7 +210,7 @@ void Game::serialize(WriteBuffer *b) {
 
     b->write_int(last_reward_timer);
     b->write_float(last_reward);
-    b->write_int(default_action);
+    b->write_float(default_action);
 
     b->write_int(fixed_asset_seed);
 
@@ -259,7 +260,7 @@ void Game::deserialize(ReadBuffer *b) {
     step_data.done = b->read_int();
     step_data.level_complete = b->read_int();
 
-    action = b->read_int();
+    action = b->read_float();
     timeout = b->read_int();
 
     current_level_seed = b->read_int();
@@ -269,7 +270,7 @@ void Game::deserialize(ReadBuffer *b) {
 
     last_reward_timer = b->read_int();
     last_reward = b->read_float();
-    default_action = b->read_int();
+    default_action = b->read_float();
 
     fixed_asset_seed = b->read_int();
 

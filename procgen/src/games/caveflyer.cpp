@@ -264,8 +264,8 @@ class CaveFlyerGame : public BasicAbstractGame {
         visibility = options.distribution_mode == EasyMode ? 10 : 16;
     }
 
-    void set_action_xy(int move_action) override {
-        float acceleration = move_action % 3 - 1;
+    void set_action_xy(float move_action) override {
+        float acceleration = move_action;
         if (acceleration < 0)
             acceleration *= 0.33f;
 

@@ -379,7 +379,7 @@ class DodgeballGame : public BasicAbstractGame {
         BasicAbstractGame::game_step();
 
         float vx = last_move_action / 3 - 1;
-        float vy = last_move_action % 3 - 1;
+        float vy = last_move_action;
 
         agent->face_direction(vx, vy);
 

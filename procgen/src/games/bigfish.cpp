@@ -3,7 +3,7 @@
 #include <set>
 #include <queue>
 
-const std::string NAME = "bigfish";
+const std::string NAME = "bigfish-continuous";
 
 const int COMPLETION_BONUS = 10.0f;
 const int POSITIVE_REWARD = 1.0f;
@@ -15,12 +15,12 @@ const float FISH_MAX_R = 2;
 
 const int FISH_QUOTA = 30;
 
-class BigFish : public BasicAbstractGame {
+class BigFishContinuous : public BasicAbstractGame {
   public:
     int fish_eaten = 0;
     float r_inc = 0.0;
 
-    BigFish()
+    BigFishContinuous()
         : BasicAbstractGame(NAME) {
         timeout = 6000;
 
@@ -118,4 +118,4 @@ class BigFish : public BasicAbstractGame {
     }
 };
 
-REGISTER_GAME(NAME, BigFish);
+REGISTER_GAME(NAME, BigFishContinuous);

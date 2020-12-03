@@ -96,7 +96,7 @@ class MinerGame : public BasicAbstractGame {
         return int(agent->y) * main_width + int(agent->x);
     }
 
-    void set_action_xy(int move_action) override {
+    void set_action_xy(float move_action) override {
         BasicAbstractGame::set_action_xy(move_action);
         if (action_vx != 0)
             action_vy = 0;

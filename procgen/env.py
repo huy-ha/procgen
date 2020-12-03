@@ -12,7 +12,7 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 MAX_STATE_SIZE = 2 ** 20
 
 ENV_NAMES = [
-    "bigfish",
+    "bigfish-continuous",
     "bossfight",
     "caveflyer",
     "chaser",
@@ -197,7 +197,8 @@ class BaseProcgenEnv(CEnv):
     def act(self, ac):
         # tensorflow may return int64 actions (https://github.com/openai/gym/blob/master/gym/spaces/discrete.py#L13)
         # so always cast actions to int32
-        return super().act({"action": ac.astype(np.int32)})
+        ac = np.random.uniform(-1.0,1.0,size=(1,2))
+        return super().act({"action": ac.astype(np.float32)})
 
 
 class ProcgenGym3Env(BaseProcgenEnv):

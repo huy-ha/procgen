@@ -107,7 +107,7 @@ class PlunderGame : public BasicAbstractGame {
         }
     }
 
-    void set_action_xy(int move_action) override {
+    void set_action_xy(float move_action) override {
         action_vx = move_action / 3 - 1;
         action_vy = 0;
         action_vrot = 0;

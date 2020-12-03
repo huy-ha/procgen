@@ -448,7 +448,8 @@ bool BasicAbstractGame::should_preserve_type_themes(int type) {
 }
 
 int BasicAbstractGame::mask_theme_if_necessary(int theme, int type) {
-    if (options.restrict_themes && !should_preserve_type_themes(type)) return 0;
+    if (options.restrict_themes && !should_preserve_type_themes(type))
+        return 0;
     return theme;
 }
 
@@ -655,9 +656,10 @@ void BasicAbstractGame::basic_step_object(const std::shared_ptr<Entity> &obj) {
     obj->vy *= vy_pct;
 }
 
-void BasicAbstractGame::set_action_xy(int move_act) {
-    action_vx = move_act / 3 - 1;
-    action_vy = move_act % 3 - 1;
+void BasicAbstractGame::set_action_xy(float move_act) {
+    // std::cout <<  << "|" <<  << std::endl;
+    action_vx = *action_ptr;
+    action_vy = *(action_ptr + 1);
     action_vrot = 0;
 }
 
@@ -685,7 +687,7 @@ void BasicAbstractGame::decay_agent_velocity() {
 
 void BasicAbstractGame::game_step() {
     step_rand_int = rand_gen.randint(0, 1000000);
-    move_action = action % 9;
+    move_action = action;
     special_action = 0;
 
     if (action >= 9) {
@@ -1175,9 +1177,9 @@ void BasicAbstractGame::serialize(WriteBuffer *b) {
 
     fassert(!options.use_generated_assets);
     // these will be cleared and re-generated instead of being saved
-//     std::vector<std::shared_ptr<QImage>> basic_assets;
-//     std::vector<std::shared_ptr<QImage>> basic_reflections;
-//     std::vector<std::shared_ptr<QImage>> *main_bg_images_ptr;
+    //     std::vector<std::shared_ptr<QImage>> basic_assets;
+    //     std::vector<std::shared_ptr<QImage>> basic_reflections;
+    //     std::vector<std::shared_ptr<QImage>> *main_bg_images_ptr;
 
     // std::vector<float> asset_aspect_ratios;
     // std::vector<int> asset_num_themes;
@@ -1239,10 +1241,10 @@ void BasicAbstractGame::deserialize(ReadBuffer *b) {
 
     // when restoring state (to the same game type) with generated assets disabled, these data structures contain cached
     // asset data, and missing data will be filled in the same way in all environments
-//     std::vector<std::shared_ptr<QImage>> basic_assets;
-//     std::vector<std::shared_ptr<QImage>> basic_reflections;
+    //     std::vector<std::shared_ptr<QImage>> basic_assets;
+    //     std::vector<std::shared_ptr<QImage>> basic_reflections;
     // main_bg_images_ptr is set in game_init for all supported games, so it should always be the same
-//     std::vector<std::shared_ptr<QImage>> *main_bg_images_ptr;
+    //     std::vector<std::shared_ptr<QImage>> *main_bg_images_ptr;
 
     // std::vector<float> asset_aspect_ratios;
     // std::vector<int> asset_num_themes;

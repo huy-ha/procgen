@@ -264,9 +264,9 @@ class Climber : public BasicAbstractGame {
         visibility = main_width;
     }
 
-    void set_action_xy(int move_action) override {
+    void set_action_xy(float move_action) override {
         action_vx = move_action / 3 - 1;
-        action_vy = (move_action % 3) - 1;
+        action_vy = move_action;
         if (action_vy < 0)
             action_vy = 0;
 

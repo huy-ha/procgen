@@ -57,7 +57,7 @@ int libenv_get_tensortypes(libenv_env *handle, enum libenv_space_name name, stru
     } else if (name == LIBENV_SPACE_ACTION) {
         types = venv->action_types;
         fassert(types.size() == 1);
-        fassert(types[0].dtype == LIBENV_DTYPE_INT32);
+        // fassert(types[0].dtype == LIBENV_DTYPE_INT32);
     } else if (name == LIBENV_SPACE_INFO) {
         types = venv->info_types;
     } else {
@@ -129,7 +129,7 @@ static void stepping_worker(std::mutex &stepping_thread_mutex,
             game->reset();
             game->observe();
             game->initial_reset_complete = true;
-        } else{
+        } else {
             game->step();
         }
 
@@ -226,11 +226,12 @@ VecGame::VecGame(int _nenvs, VecOptions opts) {
     {
         struct libenv_tensortype s;
         strcpy(s.name, "action");
-        s.scalar_type = LIBENV_SCALAR_TYPE_DISCRETE;
-        s.dtype = LIBENV_DTYPE_INT32;
-        s.ndim = 0;
-        s.low.int32 = 0;
-        s.high.int32 = num_actions - 1;
+        s.scalar_type = LIBENV_SCALAR_TYPE_REAL;
+        s.dtype = LIBENV_DTYPE_FLOAT32;
+        s.shape[0] = 2;
+        s.ndim = 1;
+        s.low.float32 = -1;
+        s.high.float32 = 1;
         action_types.push_back(s);
     }
 
@@ -266,7 +267,7 @@ VecGame::VecGame(int _nenvs, VecOptions opts) {
         s.high.int32 = INT32_MAX;
         info_types.push_back(s);
     }
-    
+
     if (render_human) {
         struct libenv_tensortype s;
         strcpy(s.name, "rgb");
@@ -337,12 +338,13 @@ void VecGame::set_buffers(const std::vector<std::vector<void *>> &ac, const std:
         for (int e = 0; e < num_envs; e++) {
             const auto &game = games[e];
             // we only ever have one action
-            game->action_ptr = (int32_t *)(ac[e][0]);
+            // TODO ACTION
+            game->action_ptr = (float *)(ac[e][0]);
             game->obs_bufs = ob[e];
             game->info_bufs = info[e];
             game->reward_ptr = &rew[e];
             game->first_ptr = &first[e];
-            
+
             // render the initial state so we don't see a black screen on the first frame
             fassert(!game->is_waiting_for_step);
             fassert(!game->initial_reset_complete);
@@ -435,23 +437,23 @@ void VecGame::wait_for_stepping_threads() {
 }
 
 extern "C" {
-    LIBENV_API int get_state(libenv_env *handle, int env_idx, char *data, int length) {
-        auto venv = (VecGame *)(handle);
-        venv->wait_for_stepping_threads();
-        auto b = WriteBuffer(data, length);
-        venv->games.at(env_idx)->serialize(&b);
-        b.write_int(END_OF_BUFFER);
-        return b.offset;
-    }
+LIBENV_API int get_state(libenv_env *handle, int env_idx, char *data, int length) {
+    auto venv = (VecGame *)(handle);
+    venv->wait_for_stepping_threads();
+    auto b = WriteBuffer(data, length);
+    venv->games.at(env_idx)->serialize(&b);
+    b.write_int(END_OF_BUFFER);
+    return b.offset;
+}
 
-    LIBENV_API void set_state(libenv_env *handle, int env_idx, char *data, int length) {
-        auto venv = (VecGame *)(handle);
-        venv->wait_for_stepping_threads();
-        auto b = ReadBuffer(data, length);
-        venv->games.at(env_idx)->deserialize(&b);
-        fassert(b.read_int() == END_OF_BUFFER);
-        // after deserializing, we need to update the observation and info buffers so that the
-        // next time VecGame::observe() is called, the correct data will be in the buffers
-        venv->games.at(env_idx)->observe();
-    }
+LIBENV_API void set_state(libenv_env *handle, int env_idx, char *data, int length) {
+    auto venv = (VecGame *)(handle);
+    venv->wait_for_stepping_threads();
+    auto b = ReadBuffer(data, length);
+    venv->games.at(env_idx)->deserialize(&b);
+    fassert(b.read_int() == END_OF_BUFFER);
+    // after deserializing, we need to update the observation and info buffers so that the
+    // next time VecGame::observe() is called, the correct data will be in the buffers
+    venv->games.at(env_idx)->observe();
+}
 }
